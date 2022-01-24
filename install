@@ -1,0 +1,119 @@
+#!/bin/bash
+
+if (( $EUID != 0 )); then
+    echo "Please run as root"
+    exit 1
+fi
+
+# COLORS
+reset=`tput sgr0`
+red=`tput setaf 1`
+green=`tput setaf 2`
+yellow=`tput setaf 3`
+blue=`tput setaf 4`
+white=`tput setaf 7`
+wbg=`tput setab 7`
+
+function menu(){
+    clear
+    echo "${red} ██╗    ██╗ ██████╗ ██████╗ ██╗  ██╗   ${wbg}██████   ██████████${reset}"
+    echo "${red} ██║    ██║██╔═══██╗██╔══██╗╚██╗██╔╝   ${wbg}██████   ██████████${reset}"
+    echo "${red} ██║ █╗ ██║██║   ██║██████╔╝ ╚███╔╝    ${wbg}                   ${reset}"
+    echo "${red} ██║███╗██║██║   ██║██╔══██╗ ██╔██╗    ${wbg}██████   ██████████${reset}"
+    echo "${red} ╚███╔███╔╝╚██████╔╝██║  ██║██╔╝ ██╗   ${wbg}██████   ██████████${reset}"
+    echo "${red}  ╚══╝╚══╝  ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝"
+    echo "${reset}"
+
+    echo " 1) Install Essential Tools"
+    echo " 2) Install Office Tools"
+    echo " 3) Install Development Tools"
+    echo " 4) Install Virtualization Tools"
+    echo " 5) Install Streaming Tools"
+    echo " 6) Launch Task Selection"
+    echo " 7) Update Everything"
+    echo " 8) Setup basics"
+    echo " 9) Download and install dotFiles from Repository (Github)"
+    echo " 0) Exit"
+    read input
+}
+
+function setHostname(){
+    echo "${white} Input hostname: ${reset}"
+    read newHostname
+    echo $newHostname > /etc/hostname;
+}
+
+# BASIC SETUP
+menu
+
+case $input in
+    1)  # ESSENTIAL TOOLS
+        apt install -y vim mc p7zip tilix terminator tasksel firefox
+        apt autoremove -y
+        apt autoclean -y
+        echo "${white} Done.${reset}"
+        exit 0
+        ;;
+    2)  # OFFICE TOOLS
+        echo "${white} Done.${reset}"
+        exit 0
+        ;;
+    3)  # DEVELOPMENT TOOLS
+        apt install -y build-essential
+        install-scripts/lamp-server.sh
+        echo "${white} Done.${reset}"
+        exit 0
+        ;;
+    4)  # VIRTUALIZATION TOOLS
+        apt install -y virtualbox virtualbox-dkms virtualbox-ext-pack
+        echo "${white} Done.${reset}"
+        exit 0
+        ;;
+    5)  # STREAMING TOOLS
+        apt install -y obs-studio ffmpeg
+        echo "${white} Done.${reset}"
+        exit 0
+        ;;
+    6)  # LAMP or WINDOW MANAGER
+        tasksel
+        echo "${white} Done.${reset}"
+        exit 0
+        ;;
+    7)  # UPDATE EVERYTHING!
+        apt update; apt upgrade -y; apt dist-upgrade -y;
+        echo "${white} Done.${reset}"
+        exit 0
+        ;;
+    8)  # SETUP BASICS
+        ln -sf /usr/share/zoneinfo/Europe/Copenhagen
+        hwclock --systohc
+        #locale-gen
+        setHostname
+        echo "${white} Done.${reset}"
+        exit 0
+        ;;
+    9)  # Download and install dotFiles from Repository (Github)
+
+        ;;
+    0)  # EXIT
+        echo "${white} Done.${reset}"
+        exit 0
+        ;;
+    *)  # ERROR
+        echo "${red} Invalid selection.${reset}"
+        exit 1
+        ;;
+esac
+
+
+
+# Set keyboard and language.
+#locale-gen
+#KEYB_LANG="dk-latin1"
+#OS_LANGUAGE="en_US.UTF-8"
+
+# Set hostname
+#echo "WORX" > /etc/hostname
+
+# Download and install basic packages.
+#
